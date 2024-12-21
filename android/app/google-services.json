@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "387161930462",
+    "project_id": "smartwatch-companion",
+    "storage_bucket": "smartwatch-companion.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:387161930462:android:ee3fb198f888da09da604f",
+        "android_client_info": {
+          "package_name": "app.k12onos.smartwatch_companion"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsKHZ-lPnJYm3qvqwJPDGiV15tbrHH_xo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
