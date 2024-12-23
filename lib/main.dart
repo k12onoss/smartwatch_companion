@@ -5,6 +5,8 @@ import 'package:smartwatch_companion/authentication/auth_status/auth_status_bloc
 import 'package:smartwatch_companion/authentication/authentication_repository.dart';
 import 'package:smartwatch_companion/authentication/login/login_cubit.dart';
 import 'package:smartwatch_companion/authentication/signup/signup_cubit.dart';
+import 'package:smartwatch_companion/dashboard/health_data_cubit.dart';
+import 'package:smartwatch_companion/dashboard/mock_bluetooth_sdk.dart';
 import 'package:smartwatch_companion/router_config.dart';
 
 import 'firebase_options.dart';
@@ -21,8 +23,13 @@ class App extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider<AuthenticationRepository>(
-      create: (context) => AuthenticationRepository(),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<AuthenticationRepository>(
+          create: (_) => AuthenticationRepository(),
+        ),
+        RepositoryProvider<MockBluetoothSDK>(create: (_) => MockBluetoothSDK()),
+      ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
@@ -37,6 +44,11 @@ class App extends StatelessWidget {
           BlocProvider(
             create: (context) =>
                 SignUpCubit(context.read<AuthenticationRepository>()),
+          ),
+          BlocProvider(
+            create: (context) =>
+                HealthDataCubit(context.read<MockBluetoothSDK>())
+                  ..getHealthData(),
           ),
         ],
         child: AppView(),

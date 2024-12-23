@@ -203,7 +203,11 @@ class AuthenticationRepository {
 
 extension on User {
   WatchUser get toUser {
-    // return WatchUser(uid: uid, email: email, name: displayName, photo: photoURL);
-    return WatchUser(uid: uid);
+    return WatchUser(
+      uid: uid,
+      email: email,
+      name: displayName,
+      photo: photoURL,
+    );
   }
 }
