@@ -8,8 +8,7 @@ part 'auth_status_event.dart';
 part 'auth_status_state.dart';
 
 class AuthStatusBloc extends Bloc<AuthStatusEvent, AuthStatusState> {
-  AuthStatusBloc(this._authenticationRepository)
-      : super(AuthStatusState(user: WatchUser.empty)) {
+  AuthStatusBloc(this._authenticationRepository) : super(AuthStatusState()) {
     on<AuthStatusRequestedEvent>(_onAuthStatusRequestedEvent);
     on<LogoutEvent>(_onLogoutPressed);
   }
