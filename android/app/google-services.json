@@ -12,7 +12,20 @@
           "package_name": "app.k12onos.smartwatch_companion"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "387161930462-f11lcus53h3mk4k2sirjdr4sp8lc0lvi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.k12onos.smartwatch_companion",
+            "certificate_hash": "3c3847e633e234d8027eb2db57e1e85772299e72"
+          }
+        },
+        {
+          "client_id": "387161930462-eo4cgngehlhaira6gbkbnvd0448nsa52.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBsKHZ-lPnJYm3qvqwJPDGiV15tbrHH_xo"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "387161930462-eo4cgngehlhaira6gbkbnvd0448nsa52.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "387161930462-ccc3jtvcn0o1ofhno94oftgi0clad40g.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.k12onos.smartwatchCompanion"
+              }
+            }
+          ]
         }
       }
     }
