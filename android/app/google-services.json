@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "387161930462-bfkdb015djp9jonlgseqr2mb87ftjvpj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.k12onos.smartwatch_companion",
+            "certificate_hash": "ac5ec1c1c5282e2b75206ffa6a79875e7f890bb3"
+          }
+        },
+        {
           "client_id": "387161930462-f11lcus53h3mk4k2sirjdr4sp8lc0lvi.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
