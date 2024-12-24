@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:smartwatch_companion/authentication/auth_status/auth_status_bloc.dart';
-import 'package:smartwatch_companion/authentication/login/login_page.dart';
-import 'package:smartwatch_companion/authentication/signup/signup_page.dart';
-import 'package:smartwatch_companion/dashboard/dashboard_page.dart';
-import 'package:smartwatch_companion/loading_page.dart';
+import 'package:smartwatch_companion/authentication/blocs/auth_status_bloc.dart';
+import 'package:smartwatch_companion/authentication/pages/login_page.dart';
+import 'package:smartwatch_companion/authentication/pages/signup_page.dart';
+import 'package:smartwatch_companion/realtime_health_data/pages/dashboard_page.dart';
+import 'package:smartwatch_companion/shared/pages/loading_page.dart';
 
 final GoRouter routerConfig = GoRouter(
   initialLocation: DashboardPage.path,
@@ -27,6 +27,11 @@ final GoRouter routerConfig = GoRouter(
     if (authStatus == AuthStatus.unauthenticated &&
         isNavigatingToProtectedPage) {
       return LogInPage.path;
+    }
+
+    if (authStatus == AuthStatus.authenticated &&
+        !isNavigatingToProtectedPage) {
+      return DashboardPage.path;
     }
 
     return null;

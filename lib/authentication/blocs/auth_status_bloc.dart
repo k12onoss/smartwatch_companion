@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smartwatch_companion/authentication/authentication_repository.dart';
-import 'package:smartwatch_companion/models/watch_user.dart';
+import 'package:smartwatch_companion/authentication/models/watch_user.dart';
+import 'package:smartwatch_companion/authentication/repositories/authentication_repository.dart';
 
 part 'auth_status_event.dart';
 part 'auth_status_state.dart';

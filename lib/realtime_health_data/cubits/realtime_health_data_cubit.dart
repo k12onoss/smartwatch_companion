@@ -1,17 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smartwatch_companion/dashboard/health_data.dart';
-import 'package:smartwatch_companion/dashboard/mock_bluetooth_sdk.dart';
+import 'package:smartwatch_companion/realtime_health_data/models/health_data.dart';
+import 'package:smartwatch_companion/realtime_health_data/repositories/mock_bluetooth_sdk.dart';
 
-class HealthDataCubit extends Cubit<HealthData> {
+class RealtimeHealthDataCubit extends Cubit<HealthData> {
   final MockBluetoothSDK sdk;
   StreamSubscription<int>? _heartRateSubscription;
   StreamSubscription<int>? _stepCountSubscription;
   StreamSubscription<double>? _bloodOxygenSubscription;
   StreamSubscription<double>? _bodyTemperatureSubscription;
 
-  HealthDataCubit(this.sdk) : super(HealthData.empty);
+  RealtimeHealthDataCubit(this.sdk) : super(HealthData.empty);
 
   void getHealthData() {
     _heartRateSubscription = sdk

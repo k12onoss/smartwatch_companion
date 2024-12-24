@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:smartwatch_companion/authentication/auth_status/auth_status_bloc.dart';
-import 'package:smartwatch_companion/dashboard/health_data.dart';
-import 'package:smartwatch_companion/dashboard/health_data_cubit.dart';
+import 'package:smartwatch_companion/authentication/blocs/auth_status_bloc.dart';
+import 'package:smartwatch_companion/past_health_records/pages/past_health_records_page.dart';
+import 'package:smartwatch_companion/realtime_health_data/cubits/realtime_health_data_cubit.dart';
+import 'package:smartwatch_companion/realtime_health_data/models/health_data.dart';
 
 class DashboardPage extends StatelessWidget {
   static String get path => "/dashboard";
@@ -15,6 +16,7 @@ class DashboardPage extends StatelessWidget {
           AuthStatusState authState = context.read<AuthStatusBloc>().state;
           return DashboardPage(userName: authState.user.name);
         },
+        routes: [PastHealthRecordsPage.route],
       );
 
   const DashboardPage({super.key, required this.userName});
@@ -58,7 +60,7 @@ class DashboardPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Expanded(
-                child: BlocBuilder<HealthDataCubit, HealthData>(
+                child: BlocBuilder<RealtimeHealthDataCubit, HealthData>(
                   builder: (context, state) {
                     if (state == HealthData.empty) {
                       return const Center(
@@ -70,26 +72,26 @@ class DashboardPage extends StatelessWidget {
                         crossAxisSpacing: 16.0,
                         mainAxisSpacing: 16.0,
                         children: [
-                          MetricCard(
+                          _MetricCard(
                             title: 'Step Count',
                             value: '${state.stepCount} steps',
                             icon: Icons.directions_walk,
                             iconColor: Colors.blue,
                           ),
-                          MetricCard(
+                          _MetricCard(
                             title: 'Heart Rate',
                             value: '${state.heartRate} bpm',
                             icon: Icons.favorite,
                             iconColor: Colors.red,
                           ),
-                          MetricCard(
+                          _MetricCard(
                             title: 'Blood Oxygen',
                             value:
                                 '${state.bloodOxygenLevel.toStringAsFixed(2)}%',
                             icon: Icons.bloodtype,
                             iconColor: Colors.purple,
                           ),
-                          MetricCard(
+                          _MetricCard(
                             title: 'Body Temperature',
                             value:
                                 '${state.bodyTemperature.toStringAsFixed(2)}°C',
@@ -116,9 +118,8 @@ class DashboardPage extends StatelessWidget {
   }
 }
 
-class MetricCard extends StatelessWidget {
-  const MetricCard({
-    super.key,
+class _MetricCard extends StatelessWidget {
+  const _MetricCard({
     required this.title,
     required this.value,
     required this.icon,
@@ -137,38 +138,41 @@ class MetricCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.0),
       ),
       elevation: 4.0,
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 40,
-              color: iconColor,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[800],
+      child: GestureDetector(
+        onTap: () => context.goNamed(PastHealthRecordsPage.name),
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 40,
+                color: iconColor,
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 5),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.teal[700],
+              const SizedBox(height: 10),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[800],
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+              const SizedBox(height: 5),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.teal[700],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

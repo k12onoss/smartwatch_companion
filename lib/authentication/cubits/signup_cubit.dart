@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smartwatch_companion/authentication/authentication_repository.dart';
+import 'package:smartwatch_companion/authentication/repositories/authentication_repository.dart';
 
 enum SignUpState {
   inProgress,

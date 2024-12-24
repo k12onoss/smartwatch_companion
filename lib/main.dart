@@ -1,24 +1,40 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smartwatch_companion/authentication/auth_status/auth_status_bloc.dart';
-import 'package:smartwatch_companion/authentication/authentication_repository.dart';
-import 'package:smartwatch_companion/authentication/login/login_cubit.dart';
-import 'package:smartwatch_companion/authentication/signup/signup_cubit.dart';
-import 'package:smartwatch_companion/dashboard/health_data_cubit.dart';
-import 'package:smartwatch_companion/dashboard/mock_bluetooth_sdk.dart';
-import 'package:smartwatch_companion/router_config.dart';
+import 'package:path/path.dart';
+import 'package:smartwatch_companion/authentication/blocs/auth_status_bloc.dart';
+import 'package:smartwatch_companion/authentication/cubits/login_cubit.dart';
+import 'package:smartwatch_companion/authentication/cubits/signup_cubit.dart';
+import 'package:smartwatch_companion/authentication/repositories/authentication_repository.dart';
+import 'package:smartwatch_companion/config/router_config.dart';
+import 'package:smartwatch_companion/past_health_records/cubits/past_health_records_cubit.dart';
+import 'package:smartwatch_companion/past_health_records/repositories/health_records_repository.dart';
+import 'package:smartwatch_companion/realtime_health_data/cubits/realtime_health_data_cubit.dart';
+import 'package:smartwatch_companion/realtime_health_data/repositories/mock_bluetooth_sdk.dart';
+import 'package:sqflite/sqflite.dart';
 
-import 'firebase_options.dart';
+import 'config/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final Database database = await openDatabase(
+    join(await getDatabasesPath(), 'health_records.db'),
+    onCreate: (db, version) {
+      return db.execute(HealthRecordsRepository.createTableQuery);
+    },
+    version: 1,
+  );
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const App());
+
+  runApp(App(database: database));
 }
 
 class App extends StatelessWidget {
-  const App({super.key});
+  const App({super.key, required Database database}) : _database = database;
+
+  final Database _database;
 
   // This widget is the root of your application.
   @override
@@ -29,6 +45,9 @@ class App extends StatelessWidget {
           create: (_) => AuthenticationRepository(),
         ),
         RepositoryProvider<MockBluetoothSDK>(create: (_) => MockBluetoothSDK()),
+        RepositoryProvider<HealthRecordsRepository>(
+          create: (_) => HealthRecordsRepository(_database),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -47,8 +66,13 @@ class App extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) =>
-                HealthDataCubit(context.read<MockBluetoothSDK>())
-                  ..getHealthData(),
+                RealtimeHealthDataCubit(context.read<MockBluetoothSDK>()),
+          ),
+          BlocProvider(
+            create: (context) => PastHealthRecordsCubit(
+              sdk: context.read<MockBluetoothSDK>(),
+              healthRecordsRepository: context.read<HealthRecordsRepository>(),
+            ),
           ),
         ],
         child: AppView(),
@@ -63,7 +87,15 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthStatusBloc, AuthStatusState>(
-      listener: (context, state) => routerConfig.refresh(),
+      listener: (context, state) {
+        routerConfig.refresh();
+        if (state.status == AuthStatus.authenticated) {
+          context.read<RealtimeHealthDataCubit>().getHealthData();
+          context
+              .read<PastHealthRecordsCubit>()
+              .startPersistingRecords(state.user.uid);
+        }
+      },
       child: MaterialApp.router(
         title: 'Smartwatch companion',
         theme: ThemeData.from(

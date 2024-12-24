@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:smartwatch_companion/authentication/login/login_cubit.dart';
-import 'package:smartwatch_companion/authentication/signup/signup_page.dart';
+import 'package:smartwatch_companion/authentication/cubits/signup_cubit.dart';
+import 'package:smartwatch_companion/authentication/pages/login_page.dart';
 
-class LogInPage extends StatelessWidget {
-  static String get path => "/login";
-  static String get name => "login";
+class SignUpPage extends StatelessWidget {
+  static String get path => "/signup";
+  static String get name => "signup";
   static GoRoute get route => GoRoute(
         path: path,
         name: name,
-        builder: (_, __) => LogInPage(),
+        builder: (_, __) => SignUpPage(),
       );
 
-  LogInPage({super.key});
+  SignUpPage({super.key});
 
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +40,7 @@ class LogInPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Smartwatch Companion',
+                    'Create an Account',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -45,6 +48,18 @@ class LogInPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 40),
+                  TextField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      labelText: 'Full Name',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      prefixIcon: Icon(Icons.person),
+                    ),
+                    textInputAction: TextInputAction.next,
+                  ),
+                  const SizedBox(height: 20),
                   TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -69,14 +84,31 @@ class LogInPage extends StatelessWidget {
                       prefixIcon: Icon(Icons.lock),
                     ),
                     obscureText: true,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  const SizedBox(height: 20),
+                  TextField(
+                    controller: _confirmPasswordController,
+                    decoration: InputDecoration(
+                      labelText: 'Confirm Password',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      prefixIcon: Icon(Icons.lock_outline),
+                    ),
+                    obscureText: true,
                   ),
                   const SizedBox(height: 30),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<LogInCubit>().loginWithEmailAndPassword(
-                            email: _emailController.text,
-                            password: _passwordController.text,
-                          );
+                      if (_confirmPasswordController.text ==
+                          _passwordController.text) {
+                        context.read<SignUpCubit>().signUp(
+                              name: _nameController.text,
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                            );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14.0),
@@ -87,7 +119,7 @@ class LogInPage extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'Log In',
+                      'Sign Up',
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.white,
@@ -95,83 +127,15 @@ class LogInPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Forgot Password
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     // Navigate to Forgot Password page
-                  //   },
-                  //   child: Text(
-                  //     'Forgot Password?',
-                  //     style: TextStyle(
-                  //       color: Colors.teal[700],
-                  //       fontWeight: FontWeight.w500,
-                  //     ),
-                  //   ),
-                  // ),
-                  const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        width: 20.0,
-                        child: Divider(
-                          color: Colors.black,
-                          endIndent: 8.0,
-                        ),
-                      ),
-                      Text(
-                        'OR',
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.w700,
-                          color: Color.fromRGBO(136, 151, 174, 1),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 20.0,
-                        child: Divider(
-                          color: Colors.black,
-                          indent: 8.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8.0),
-                  TextButton.icon(
-                    onPressed: () {
-                      context.read<LogInCubit>().loginWithGoogle();
-                    },
-                    icon: Image.asset(
-                      'assets/google_logo.png',
-                      height: 20.0,
-                    ),
-                    label: const Text(
-                      'Sign in with Google',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    style: ButtonStyle(
-                        // fixedSize: WidgetStateProperty.all(
-                        //   Size(size.width, size.width * 0.16),
-                        // ),
-                        // shape: WidgetStateProperty.all(
-                        //   const StadiumBorder(
-                        //     side: BorderSide(color: Colors.teal),
-                        //   ),
-                        // ),
-                        ),
-                  ),
-                  const SizedBox(height: 80),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Don’t have an account?'),
+                      Text('Already have an account?'),
                       const SizedBox(width: 5),
                       GestureDetector(
-                        onTap: () => context.go(SignUpPage.path),
+                        onTap: () => context.go(LogInPage.path),
                         child: Text(
-                          'Sign Up',
+                          'Log In',
                           style: TextStyle(
                             color: Colors.teal[700],
                             fontWeight: FontWeight.bold,
