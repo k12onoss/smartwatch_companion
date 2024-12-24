@@ -1,27 +1,38 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartwatch_companion/authentication/repositories/authentication_repository.dart';
 
-enum SignUpState {
-  inProgress,
-  success,
-  failure,
+abstract class SignUpState {}
+
+class SignUpIdle extends SignUpState {}
+
+class SignUpInProgress extends SignUpState {}
+
+class SignUpSuccess extends SignUpState {}
+
+class SignUpFailure extends SignUpState {
+  final String message;
+
+  SignUpFailure(this.message);
 }
 
 class SignUpCubit extends Cubit<SignUpState> {
-  SignUpCubit(this._authenticationRepository) : super(SignUpState.inProgress);
+  SignUpCubit(this._authenticationRepository) : super(SignUpIdle());
 
   final AuthenticationRepository _authenticationRepository;
 
-  void signUp(
-      {required String name,
-      required String email,
-      required String password}) async {
-    emit(SignUpState.inProgress);
+  void signUp({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    emit(SignUpInProgress());
     try {
       await _authenticationRepository.signUp(email: email, password: password);
-      emit(SignUpState.success);
+      emit(SignUpSuccess());
+    } on SignUpWithEmailAndPasswordFailure catch (e) {
+      emit(SignUpFailure(e.message));
     } catch (_) {
-      emit(SignUpState.failure);
+      emit(SignUpFailure('An unknown error occurred.'));
     }
   }
 }

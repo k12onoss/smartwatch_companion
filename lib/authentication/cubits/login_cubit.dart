@@ -1,36 +1,54 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smartwatch_companion/authentication/repositories/authentication_repository.dart';
 
-enum LogInState { inProgress, success, failure }
+abstract class LogInState {}
+
+class LogInIdle extends LogInState {}
+
+class LogInInProgress extends LogInState {}
+
+class LogInSuccess extends LogInState {}
+
+class LogInFailure extends LogInState {
+  final String message;
+
+  LogInFailure(this.message);
+}
 
 class LogInCubit extends Cubit<LogInState> {
-  LogInCubit(this._authenticationRepository) : super(LogInState.inProgress);
+  LogInCubit(this._authenticationRepository) : super(LogInIdle());
 
   final AuthenticationRepository _authenticationRepository;
 
-  void loginWithEmailAndPassword(
-      {required String email, required String password}) async {
-    emit(LogInState.inProgress);
+  void loginWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    emit(LogInInProgress());
 
     try {
       await _authenticationRepository.logInWithEmailAndPassword(
           email: email, password: password);
 
-      emit(LogInState.success);
+      emit(LogInSuccess());
+    } on LogInWithEmailAndPasswordFailure catch (failure) {
+      emit(LogInFailure(failure.message));
     } catch (_) {
-      emit(LogInState.failure);
+      emit(LogInFailure("An unknown error occurred."));
     }
   }
 
   void loginWithGoogle() async {
-    emit(LogInState.inProgress);
+    emit(LogInInProgress());
 
     try {
       await _authenticationRepository.logInWithGoogle();
 
-      emit(LogInState.success);
+      emit(LogInSuccess());
+    } on LogInWithGoogleFailure catch (e) {
+      emit(LogInFailure(e.message));
     } catch (_) {
-      emit(LogInState.failure);
+      emit(LogInFailure("An unknown error occurred."));
     }
   }
 }

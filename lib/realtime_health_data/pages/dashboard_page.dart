@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smartwatch_companion/authentication/blocs/auth_status_bloc.dart';
+import 'package:smartwatch_companion/authentication/models/watch_user.dart';
 import 'package:smartwatch_companion/past_health_records/pages/past_health_records_page.dart';
 import 'package:smartwatch_companion/realtime_health_data/cubits/realtime_health_data_cubit.dart';
 import 'package:smartwatch_companion/realtime_health_data/models/health_data.dart';
@@ -14,13 +15,13 @@ class DashboardPage extends StatelessWidget {
         name: name,
         builder: (context, _) {
           AuthStatusState authState = context.read<AuthStatusBloc>().state;
-          return DashboardPage(userName: authState.user.name);
+          return DashboardPage(user: authState.user);
         },
       );
 
-  const DashboardPage({super.key, required this.userName});
+  const DashboardPage({super.key, required this.user});
 
-  final String? userName;
+  final WatchUser user;
 
   @override
   Widget build(BuildContext context) {
@@ -40,15 +41,35 @@ class DashboardPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              ListTile(
+                leading: user.photo != null && user.photo!.isNotEmpty
+                    ? CircleAvatar(
+                        // radius: 50,
+                        backgroundImage: NetworkImage(user.photo!),
+                      )
+                    : const CircleAvatar(
+                        // radius: 50,
+                        backgroundColor: Colors.grey,
+                      ),
+                title: Text(
+                  user.name ?? 'User',
+                  style: TextStyle(fontSize: 18),
+                ),
+                subtitle: Text(
+                  user.email ?? 'Email',
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+              ),
+              const SizedBox(height: 16.0),
               Text(
-                'Welcome Back, $userName',
+                'Welcome Back!',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: Colors.teal[700],
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               Text(
                 'Your Health Metrics:',
                 style: TextStyle(
