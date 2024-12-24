@@ -4,6 +4,7 @@ import 'package:smartwatch_companion/authentication/blocs/auth_status_bloc.dart'
 import 'package:smartwatch_companion/authentication/pages/login_page.dart';
 import 'package:smartwatch_companion/authentication/pages/signup_page.dart';
 import 'package:smartwatch_companion/realtime_health_data/pages/dashboard_page.dart';
+import 'package:smartwatch_companion/shared/pages/home.dart';
 import 'package:smartwatch_companion/shared/pages/loading_page.dart';
 
 final GoRouter routerConfig = GoRouter(
@@ -12,7 +13,7 @@ final GoRouter routerConfig = GoRouter(
     LoadingPage.route,
     LogInPage.route,
     SignUpPage.route,
-    DashboardPage.route,
+    Home.route,
   ],
   redirect: (context, routerState) {
     final authStatus = context.read<AuthStatusBloc>().state.status;

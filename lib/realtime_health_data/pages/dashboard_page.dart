@@ -16,7 +16,6 @@ class DashboardPage extends StatelessWidget {
           AuthStatusState authState = context.read<AuthStatusBloc>().state;
           return DashboardPage(userName: authState.user.name);
         },
-        routes: [PastHealthRecordsPage.route],
       );
 
   const DashboardPage({super.key, required this.userName});

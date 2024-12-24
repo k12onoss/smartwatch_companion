@@ -6,7 +6,7 @@ import 'package:smartwatch_companion/past_health_records/cubits/past_health_reco
 import 'package:smartwatch_companion/past_health_records/models/health_record.dart';
 
 class PastHealthRecordsPage extends StatelessWidget {
-  static String get path => "health_records";
+  static String get path => "/health_records";
   static String get name => "health_records";
   static GoRoute get route => GoRoute(
         path: path,
